@@ -24,10 +24,10 @@ class TelegramHandler(Handler):
         await self._change_screen_state(update, State.OFF)
 
     async def _fan_on_command(self, update: Update, _: ContextTypes.DEFAULT_TYPE):
-        await self._change_screen_state(update, State.ON)
+        await self._change_fan_state(update, State.ON)
 
     async def _fan_off_command(self, update: Update, _: ContextTypes.DEFAULT_TYPE):
-        await self._change_screen_state(update, State.OFF)
+        await self._change_fan_state(update, State.OFF)
 
     async def _temp_command(self, update: Update, _: ContextTypes.DEFAULT_TYPE):
         await self._reply(update, str(self._temperature.get()))
