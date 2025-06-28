@@ -9,7 +9,7 @@ from Classes.Fan.Fan import Fan
 
 
 class TelegramHandler(Handler):
-    _help_message: str = "/screen_on\n/screen_off\n/fan_on\n/fan_off\nfan_block\nfan_unblock\n/temp\n/help"
+    _help_message: str = "/screen_on\n/screen_off\n/fan_on\n/fan_off\n/fan_block\n/fan_unblock\n/temp\n/help"
 
     def __init__(self, temperature: Temperature, fan: Fan, pi_screen: PiScreen, token: str, *_, **__):
         self._temperature: Temperature = temperature
