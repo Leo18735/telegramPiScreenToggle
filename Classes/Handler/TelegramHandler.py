@@ -42,13 +42,13 @@ class TelegramHandler(Handler):
     async def _help_command(cls, update: Update, _: ContextTypes.DEFAULT_TYPE):
         await cls._reply(update, cls._help_message)
 
-    async def _change_fan_state(self, update: Update, state: State):
-        state = self._fan.set(state)
+    async def _change_fan_state(self, update: Update, desired_state: State):
+        state = self._fan.set(desired_state)
         if state == State.NO_CHANGE:
             return await self._reply(update, "Fan already in correct state")
-        if state == state:
+        if state == desired_state:
             return await self._reply(update, "Ok")
-        if state == State.BLOCK:
+        if state == State.BLOCK and desired_state != State.BLOCK:
             return await self._reply(update, "Fan is blocked")
         return await self._reply(update, "Unknown error")
 
