@@ -19,3 +19,6 @@ class Fan:
             GPIO.set_state(self._pin, state)
         self._state = state
         return self._state
+
+    def get(self) -> State:
+        return self._state

@@ -7,7 +7,7 @@ class PiScreen:
     _command: str = "XDG_RUNTIME_DIR=/run/user/1000 wlr-randr --output DSI-1"
 
     def __init__(self):
-        self._state: State = self._get()
+        self._state: State = self.get_current()
 
     def set(self, state: State) -> State:
         if state == self._state:
@@ -20,7 +20,7 @@ class PiScreen:
         return state
 
     @classmethod
-    def _get(cls) -> State:
+    def get_current(cls) -> State:
         stdout, _, code = execute(cls._command)
         if code != 0:
             return State.ERROR
@@ -28,3 +28,6 @@ class PiScreen:
         if len(matches) == 0:
             return State.ERROR
         return State.ON if matches[0] == "yes" else State.OFF
+
+    def get(self) -> State:
+        return self._state

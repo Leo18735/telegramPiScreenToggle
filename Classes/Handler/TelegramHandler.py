@@ -1,4 +1,4 @@
-import asyncio
+import json
 from telegram import Update
 from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes
 from Classes.Handler.Handler import Handler
@@ -9,7 +9,7 @@ from Classes.Fan.Fan import Fan
 
 
 class TelegramHandler(Handler):
-    _help_message: str = "/screen_on\n/screen_off\n/fan_on\n/fan_off\n/fan_block\n/fan_unblock\n/temp\n/help"
+    _help_message: str = "/screen_on\n/screen_off\n/fan_on\n/fan_off\n/fan_block\n/fan_unblock\n/temp\n/state\n/help"
 
     def __init__(self, temperature: Temperature, fan: Fan, pi_screen: PiScreen, token: str, *_, **__):
         self._temperature: Temperature = temperature
@@ -37,6 +37,12 @@ class TelegramHandler(Handler):
 
     async def _temp_command(self, update: Update, _: ContextTypes.DEFAULT_TYPE):
         await self._reply(update, str(self._temperature.get()))
+
+    async def _state_command(self, update: Update, _: ContextTypes.DEFAULT_TYPE):
+        await self._reply(update, json.dumps({
+            "screen": self._pi_screen.get().name,
+            "fan": self._fan.get().name
+        }, indent=2))
 
     @classmethod
     async def _help_command(cls, update: Update, _: ContextTypes.DEFAULT_TYPE):
@@ -75,6 +81,7 @@ class TelegramHandler(Handler):
         app.add_handler(CommandHandler("fan_off", self._fan_off_command))
         app.add_handler(CommandHandler("fan_block", self._fan_block_command))
         app.add_handler(CommandHandler("fan_unblock", self._fan_unblock_command))
+        app.add_handler(CommandHandler("state", self._state_command))
         app.add_handler(CommandHandler("temp", self._temp_command))
         app.add_handler(CommandHandler("help", self._help_command))
 
