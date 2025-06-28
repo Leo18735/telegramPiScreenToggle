@@ -9,7 +9,7 @@ from Classes.Fan.Fan import Fan
 
 
 class TelegramHandler(Handler):
-    _help_message: str = "/screen_on\n/screen_off\n/fan_on\n/fan_off\n/temp\n/help"
+    _help_message: str = "/screen_on\n/screen_off\n/fan_on\n/fan_off\nfan_block\nfan_unblock\n/temp\n/help"
 
     def __init__(self, temperature: Temperature, fan: Fan, pi_screen: PiScreen, token: str, *_, **__):
         self._temperature: Temperature = temperature
@@ -28,6 +28,12 @@ class TelegramHandler(Handler):
 
     async def _fan_off_command(self, update: Update, _: ContextTypes.DEFAULT_TYPE):
         await self._change_fan_state(update, State.OFF)
+
+    async def _fan_block_command(self, update: Update, _: ContextTypes.DEFAULT_TYPE):
+        await self._change_fan_state(update, State.BLOCK)
+
+    async def _fan_unblock_command(self, update: Update, _: ContextTypes.DEFAULT_TYPE):
+        await self._change_fan_state(update, State.BLOCK)
 
     async def _temp_command(self, update: Update, _: ContextTypes.DEFAULT_TYPE):
         await self._reply(update, str(self._temperature.get()))
@@ -67,6 +73,8 @@ class TelegramHandler(Handler):
         app.add_handler(CommandHandler("screen_off", self._screen_off_command))
         app.add_handler(CommandHandler("fan_on", self._fan_on_command))
         app.add_handler(CommandHandler("fan_off", self._fan_off_command))
+        app.add_handler(CommandHandler("fan_block", self._fan_block_command))
+        app.add_handler(CommandHandler("fan_unblock", self._fan_unblock_command))
         app.add_handler(CommandHandler("temp", self._temp_command))
         app.add_handler(CommandHandler("help", self._help_command))
 
