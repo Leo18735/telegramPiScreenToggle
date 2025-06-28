@@ -13,7 +13,7 @@ class Fan:
         if state == State.BLOCK:
             GPIO.set_state(self._pin, State.OFF)
         else:
-            if self._state == State.BLOCK and state != State.OFF:
+            if hasattr(self, "_state") and self._state == State.BLOCK and state != State.OFF:
                 return self._state
             GPIO.set_state(self._pin, state)
         self._state = state
