@@ -13,11 +13,12 @@ class Temperature:
 
     @classmethod
     def get(cls) -> float:
-        stdout = execute(cls._command)[0]
-        try:
-            return float(re.findall(r"temp=(\d+\.\d+)'C", stdout)[0])
-        except:
-            pass
+        stdout, _, code = execute(cls._command)
+        if code == 0:
+            try:
+                return float(re.findall(r"temp=(\d+\.\d+)'C", stdout)[0])
+            except:
+                pass
         return -1
 
     def get_change(self) -> State:

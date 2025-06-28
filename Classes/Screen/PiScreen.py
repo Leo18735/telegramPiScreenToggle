@@ -14,9 +14,10 @@ class PiScreen:
             return State.NO_CHANGE
         if state not in (State.ON, State.OFF):
             raise Exception(f"State '{state.name}' not allowed")
-        if execute(f"{self._command} {'--on' if state == State.ON else '--off'}")[2] == 0:
-            return state
-        return State.ERROR
+        if execute(f"{self._command} {'--on' if state == State.ON else '--off'}")[2] != 0:
+            return State.ERROR
+        self._state = state
+        return state
 
     @classmethod
     def _get(cls) -> State:
