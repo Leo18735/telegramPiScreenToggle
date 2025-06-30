@@ -1,4 +1,5 @@
 import json
+import asyncio
 from telegram import Update
 from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes
 from Classes.Handler.Handler import Handler
@@ -17,60 +18,74 @@ class TelegramHandler(Handler):
         self._pi_screen: PiScreen = pi_screen
         self._token: str = token
 
-    async def _screen_on_command(self, update: Update, _: ContextTypes.DEFAULT_TYPE):
-        await self._change_screen_state(update, State.ON)
+    async def _screen_on_command(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+        await self._change_screen_state(update, context, State.ON)
 
-    async def _screen_off_command(self, update: Update, _: ContextTypes.DEFAULT_TYPE):
-        await self._change_screen_state(update, State.OFF)
+    async def _screen_off_command(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+        await self._change_screen_state(update, context, State.OFF)
 
-    async def _fan_on_command(self, update: Update, _: ContextTypes.DEFAULT_TYPE):
-        await self._change_fan_state(update, State.ON)
+    async def _fan_on_command(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+        await self._change_fan_state(update, context, State.ON)
 
-    async def _fan_off_command(self, update: Update, _: ContextTypes.DEFAULT_TYPE):
-        await self._change_fan_state(update, State.OFF)
+    async def _fan_off_command(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+        await self._change_fan_state(update, context, State.OFF)
 
-    async def _fan_block_command(self, update: Update, _: ContextTypes.DEFAULT_TYPE):
-        await self._change_fan_state(update, State.BLOCK)
+    async def _fan_block_command(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+        await self._change_fan_state(update, context, State.BLOCK)
 
-    async def _fan_unblock_command(self, update: Update, _: ContextTypes.DEFAULT_TYPE):
-        await self._change_fan_state(update, State.OFF)
+    async def _fan_unblock_command(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+        await self._change_fan_state(update, context, State.OFF)
 
-    async def _temp_command(self, update: Update, _: ContextTypes.DEFAULT_TYPE):
-        await self._reply(update, str(self._temperature.get()))
+    async def _temp_command(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+        await self._reply(update, context, str(self._temperature.get()))
 
-    async def _state_command(self, update: Update, _: ContextTypes.DEFAULT_TYPE):
-        await self._reply(update, json.dumps({
+    async def _state_command(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+        await self._reply(update, context, json.dumps({
             "screen": self._pi_screen.get().name,
             "fan": self._fan.get().name
         }, indent=2))
 
     @classmethod
-    async def _help_command(cls, update: Update, _: ContextTypes.DEFAULT_TYPE):
-        await cls._reply(update, cls._help_message)
+    async def _help_command(cls, update: Update, context: ContextTypes.DEFAULT_TYPE):
+        await cls._reply(update, context, cls._help_message)
 
-    async def _change_fan_state(self, update: Update, desired_state: State):
+    async def _change_fan_state(self, update: Update, context: ContextTypes.DEFAULT_TYPE, desired_state: State):
         state = self._fan.set(desired_state)
         if state == State.NO_CHANGE:
-            return await self._reply(update, "Fan already in correct state")
+            await self._reply(update, context, "Fan already in correct state")
+            return
         if state == desired_state:
-            return await self._reply(update, "Ok")
+            await self._reply(update, context, "Ok")
+            return
         if state == State.BLOCK and desired_state != State.BLOCK:
-            return await self._reply(update, "Fan is blocked")
-        return await self._reply(update, "Unknown error")
+            await self._reply(update, context, "Fan is blocked")
+            return
+        await self._reply(update, context, "Unknown error")
 
-    async def _change_screen_state(self, update: Update, state: State):
+    async def _change_screen_state(self, update: Update, context: ContextTypes.DEFAULT_TYPE, state: State):
         state: State = self._pi_screen.set(state)
         if state == State.NO_CHANGE:
-            return await self._reply(update, "Screen already in correct state")
+            await self._reply(update, context, "Screen already in correct state")
+            return
         if state == State.ERROR:
-            return await self._reply(update, "Error changing screen state")
+            await self._reply(update, context, "Error changing screen state")
+            return
         if state == state:
-            return await self._reply(update, "Ok")
-        return await self._reply(update, "Unknown error")
+            await self._reply(update, context, "Ok")
+            return
+        await self._reply(update, context, "Unknown error")
 
     @staticmethod
-    async def _reply(update: Update, msg: str):
-        await update.message.reply_text(msg)
+    async def _reply(update: Update, context: ContextTypes.DEFAULT_TYPE, msg: str):
+        sent_message = await update.message.reply_text(msg)
+        await asyncio.sleep(10)
+        try:
+            await context.bot.delete_message(
+                chat_id=sent_message.chat_id,
+                message_id=sent_message.message_id
+            )
+        except Exception as e:
+            print(f"Could not delete message: {e}")
 
     def run(self):
         app = ApplicationBuilder().token(self._token).build()
