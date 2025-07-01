@@ -35,4 +35,4 @@ class Temperature(StateCommand):
         return None
 
     def get_text(self) -> str:
-        return f"\n\tTemp: {self.get()}"
+        return f"\tTemp: {self.get()}"
