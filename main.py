@@ -27,6 +27,7 @@ if sys.platform == "win32":
 
 from Classes.Handler.TelegramHandler import TelegramHandler
 from Classes.Handler.TemperatureHandler import TemperatureHandler
+from Classes.Handler.SocketHandler import SocketHandler
 from Classes.Fan.Temperature import Temperature
 from Classes.Screen.PiScreen import PiScreen
 from Classes.Fan.Fan import Fan
@@ -39,6 +40,8 @@ def main():
         config_fan: dict = json.load(f)
     with open("configs/temperature_handler.json", "r") as f:
         config_temperature_handler: dict = json.load(f)
+    with open("configs/socket_handler.json", "r") as f:
+        config_socket_handler: dict = json.load(f)
     load_dotenv(".env")
     token: str = os.getenv("TOKEN")
 
@@ -48,8 +51,10 @@ def main():
 
     temperature_handler: TemperatureHandler = TemperatureHandler(temperature, fan, **config_temperature_handler)
     telegram_handler: TelegramHandler = TelegramHandler(temperature, fan, pi_screen, token)
+    socket_handler: SocketHandler = SocketHandler(fan, pi_screen, *config_socket_handler)
 
     threading.Thread(target=temperature_handler.run).start()
+    threading.Thread(target=socket_handler.run).start()
     telegram_handler.run()
 
 
