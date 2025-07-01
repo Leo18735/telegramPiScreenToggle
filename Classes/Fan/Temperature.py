@@ -20,10 +20,12 @@ class Temperature:
         try:
             return float(re.findall(r"temp=(\d+\.\d+)'C", stdout)[0])
         finally:
-            raise Exception("Could not get temp")
+            return -1
 
     def get_change(self) -> typing.Optional[State]:
         temp: float = self.get()
+        if temp == -1:
+            return None
         if temp > self._max_temp:
             return State.ON
         if temp < self._min_temp:

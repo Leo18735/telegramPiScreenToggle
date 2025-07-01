@@ -28,6 +28,7 @@ class Fan:
             new_state = RPi.GPIO.LOW
         else:
             raise Exception(f"Unknown state {state.name}")
+        print(f"Set fan {new_state}")
         GPIO.set_state(self._pin, new_state)
 
     def get(self) -> dict:
