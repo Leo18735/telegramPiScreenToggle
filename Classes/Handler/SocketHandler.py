@@ -3,7 +3,7 @@ import typing
 from Classes.Fan.Fan import Fan
 from Classes.Handler.Handler import Handler
 from Classes.Screen.PiScreen import PiScreen
-from Classes.State import State
+from Classes.State.StateIn import StateIn
 
 
 class SocketHandler(Handler):
@@ -21,26 +21,26 @@ class SocketHandler(Handler):
         self._socket.bind((self._ip, self._port))
         self._socket.listen()
 
-        self._handlers: dict[str, typing.Callable[[State], None]] = {
+        self._handlers: dict[str, typing.Callable[[StateIn], None]] = {
             "fan": self._fan.set,
             "scr": self._pi_screen.set,
             "err": self._handle_error
         }
 
     @staticmethod
-    def _handle_error(state: State):
+    def _handle_error(state: StateIn):
         print(f"[ERROR] Unrecognized or invalid input: {state.name}")
 
     def _handle(self, data: str):
         if len(data) != 4:
             return
-        state: State = State.ERROR
+        state: typing.Optional[StateIn] = None
         match data[3]:
             case "0":
-                state = State.OFF
+                state = StateIn.OFF
             case "1":
-                state = State.ON
-        if state == State.ERROR:
+                state = StateIn.ON
+        if state is None:
             return
         self._handlers.get(data[:3], self._handle_error)(state)
 

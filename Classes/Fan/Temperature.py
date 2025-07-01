@@ -1,6 +1,7 @@
 import re
+import typing
 
-from Classes.State import State
+from Classes.State.StateIn import StateIn
 from Utils.utils import execute
 
 
@@ -14,19 +15,16 @@ class Temperature:
     @classmethod
     def get(cls) -> float:
         stdout, _, code = execute(cls._command)
-        if code == 0:
-            try:
-                return float(re.findall(r"temp=(\d+\.\d+)'C", stdout)[0])
-            except:
-                pass
-        return -1
+        if code != 0:
+            return -1
+        try:
+            return float(re.findall(r"temp=(\d+\.\d+)'C", stdout)[0])
+        finally:
+            raise Exception("Could not get temp")
 
-    def get_change(self) -> State:
+    def get_change(self) -> typing.Optional[StateIn]:
         temp: float = self.get()
-        if temp < 0:
-            return State.ERROR
         if temp > self._max_temp:
-            return State.ON
+            return StateIn.ON
         if temp < self._min_temp:
-            return State.OFF
-        return State.NO_CHANGE
+            return StateIn.OFF

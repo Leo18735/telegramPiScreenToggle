@@ -1,35 +1,52 @@
+import typing
+from Classes.State.StateIn import StateIn
 from Utils.utils import execute
 import re
-from Classes.State import State
+from Classes.State.StateOut import StateOut
 
 
 class PiScreen:
     _command: str = "XDG_RUNTIME_DIR=/run/user/1000 wlr-randr --output DSI-1"
 
     def __init__(self):
-        self._state: State = self.get_current()
-
-    def set(self, state: State) -> State:
-        match (self._state, state):
-            case (s1, s2) if s1 == s2:
-                return State.NO_CHANGE
-            case (_, s) if s not in (State.ON, State.OFF):
-                return State.ERROR
-
-        if execute(f"{self._command} {'--on' if state == State.ON else '--off'}")[2] != 0:
-            return State.ERROR
-        self._state = state
-        return state
+        self._state: StateOut = self.get_current()
 
     @classmethod
-    def get_current(cls) -> State:
+    def _set(cls, state: StateIn) -> StateOut:
+        if state == StateIn.ON:
+            new_state = "on"
+            return_state = StateOut.ON
+        elif state == StateIn.OFF:
+            new_state = "off"
+            return_state = StateOut.OFF
+        else:
+            raise Exception(f"Unknown state {state.name}")
+        if execute(f"{cls._command} --{new_state}")[2] != 0:
+            raise Exception("Could not set screen state")
+        return return_state
+
+    def set(self, state: StateIn) -> StateOut:
+        new_state: typing.Optional[StateIn] = None
+        match (self.get(), state):
+            case (s1, s2) if s1 == s2:
+                return self.get()
+            case (_, s) if s in (StateIn.ON, StateIn.OFF):
+                new_state = s
+            case (s1, s2):
+                raise Exception(f"Unhandled {s1.name} {s2.name}")
+
+        self._state = self._set(new_state)
+        return self.get()
+
+    @classmethod
+    def get_current(cls) -> StateOut:
         stdout, _, code = execute(cls._command)
         if code != 0:
-            return State.ERROR
+            raise Exception("Could not get screen state")
         matches: list[str] = re.findall("enabled: (yes|no)", stdout[stdout.lower().find("dsi"):].lower())
         if len(matches) == 0:
-            return State.ERROR
-        return State.ON if matches[0] == "yes" else State.OFF
+            raise Exception("Could not get screen state")
+        return StateOut.ON if matches[0] == "yes" else StateOut.OFF
 
-    def get(self) -> State:
+    def get(self) -> StateOut:
         return self._state
