@@ -10,10 +10,12 @@ class PiScreen:
         self._state: State = self.get_current()
 
     def set(self, state: State) -> State:
-        if state == self._state:
-            return State.NO_CHANGE
-        if state not in (State.ON, State.OFF):
-            raise Exception(f"State '{state.name}' not allowed")
+        match (self._state, state):
+            case (s1, s2) if s1 == s2:
+                return State.NO_CHANGE
+            case (_, s) if s not in (State.ON, State.OFF):
+                return State.ERROR
+
         if execute(f"{self._command} {'--on' if state == State.ON else '--off'}")[2] != 0:
             return State.ERROR
         self._state = state
