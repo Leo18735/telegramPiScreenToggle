@@ -47,7 +47,7 @@ class TelegramHandler(Handler):
 
     @classmethod
     async def _help_command(cls, update: Update, context: ContextTypes.DEFAULT_TYPE):
-        await cls._reply(update, context, cls._help_message)
+        await cls._reply(update, context, cls._help_message, False)
 
     async def _change_fan_state(self, update: Update, context: ContextTypes.DEFAULT_TYPE, desired_state: State):
         state = self._fan.set(desired_state)
@@ -76,8 +76,10 @@ class TelegramHandler(Handler):
         await self._reply(update, context, "Unknown error")
 
     @staticmethod
-    async def _reply(update: Update, context: ContextTypes.DEFAULT_TYPE, msg: str):
+    async def _reply(update: Update, context: ContextTypes.DEFAULT_TYPE, msg: str, erase: bool = True):
         sent_message = await update.message.reply_text(msg)
+        if not erase:
+            return
         await asyncio.sleep(10)
         try:
             await context.bot.delete_message(
