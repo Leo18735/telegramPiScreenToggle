@@ -2,9 +2,10 @@ import typing
 from Classes.State import State
 from Classes.Fan.GPIO import GPIO
 import RPi.GPIO
+from Classes.StateCommand import StateCommand
 
 
-class Fan:
+class Fan(StateCommand):
     def __init__(self, pin: int, *_, **__):
         self._pin: int = pin
         GPIO.set_state(self._pin, RPi.GPIO.LOW)
@@ -32,5 +33,5 @@ class Fan:
         self._state = state
         GPIO.set_state(self._pin, new_state)
 
-    def get(self) -> dict:
-        return {"state": self._state.name, "block": self._block}
+    def get_text(self) -> str:
+        return f"\tState: {self._state}\n\tBlock: {'True' if self._block else 'False'}"

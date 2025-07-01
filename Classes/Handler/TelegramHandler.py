@@ -10,7 +10,7 @@ from Classes.State import State
 
 
 class TelegramHandler(Handler):
-    _help_message: str = "/screen_on\n/screen_off\n/fan_on\n/fan_off\n/fan_block\n/fan_unblock\n/temp\n/state\n/help"
+    _help_message: str = "/screen_on\n/screen_off\n/fan_on\n/fan_off\n/fan_block\n/fan_unblock\n/state\n/help"
 
     def __init__(self, temperature: Temperature, fan: Fan, pi_screen: PiScreen, token: str, *_, **__):
         self._temperature: Temperature = temperature
@@ -36,14 +36,10 @@ class TelegramHandler(Handler):
     async def _fan_unblock_command(self, _: Update, __: ContextTypes.DEFAULT_TYPE):
         await self._change_fan_state(State.OFF, False)
 
-    async def _temp_command(self, update: Update, __: ContextTypes.DEFAULT_TYPE):
-        await self._reply(update, str(self._temperature.get()))
-
     async def _state_command(self, update: Update, __: ContextTypes.DEFAULT_TYPE):
-        await self._reply(update, json.dumps({
-            "screen": json.dumps(self._pi_screen.get()),
-            "fan": json.dumps(self._fan.get())
-        }, indent=2))
+        await self._reply(update, f"Screen\n{self._pi_screen.get_text()}\n"
+                                  f"Fan\n{self._fan.get_text()}\n"
+                                  f"Temp\n{self._temperature.get_text()}")
 
     @classmethod
     async def _help_command(cls, update: Update, __: ContextTypes.DEFAULT_TYPE):
@@ -69,7 +65,6 @@ class TelegramHandler(Handler):
         app.add_handler(CommandHandler("fan_block", self._fan_block_command))
         app.add_handler(CommandHandler("fan_unblock", self._fan_unblock_command))
         app.add_handler(CommandHandler("state", self._state_command))
-        app.add_handler(CommandHandler("temp", self._temp_command))
         app.add_handler(CommandHandler("help", self._help_command))
 
         app.run_polling()

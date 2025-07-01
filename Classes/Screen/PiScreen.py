@@ -1,9 +1,10 @@
 from Classes.State import State
 from Utils.utils import execute
 import re
+from Classes.StateCommand import StateCommand
 
 
-class PiScreen:
+class PiScreen(StateCommand):
     _command: str = "XDG_RUNTIME_DIR=/run/user/1000 wlr-randr --output DSI-1"
 
     def __init__(self):
@@ -33,5 +34,5 @@ class PiScreen:
             raise Exception("Could not get screen state")
         return State.ON if matches[0] == "yes" else State.OFF
 
-    def get(self) -> dict:
-        return {"state": self._state.name}
+    def get_text(self) -> str:
+        return f"\tState: {self._state.name}"

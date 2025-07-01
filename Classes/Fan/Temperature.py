@@ -3,9 +3,10 @@ import typing
 
 from Classes.State import State
 from Utils.utils import execute
+from Classes.StateCommand import StateCommand
 
 
-class Temperature:
+class Temperature(StateCommand):
     _command: str = "vcgencmd measure_temp"
 
     def __init__(self, min_temp: float, max_temp: float, *_, **__):
@@ -19,8 +20,9 @@ class Temperature:
             return -1
         try:
             return float(re.findall(r"temp=(\d+\.\d+)'C", stdout)[0])
-        finally:
-            return -1
+        except:
+            pass
+        return -1
 
     def get_change(self) -> typing.Optional[State]:
         temp: float = self.get()
@@ -31,3 +33,6 @@ class Temperature:
         if temp < self._min_temp:
             return State.OFF
         return None
+
+    def get_text(self) -> str:
+        return f"\n\tTemp: {self.get()}"
