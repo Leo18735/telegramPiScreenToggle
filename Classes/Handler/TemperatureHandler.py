@@ -13,6 +13,7 @@ class TemperatureHandler(Handler):
 
     def run(self):
         while True:
+            time.sleep(self._sleep_time)
             desired_state: State = self._temperature.get_change()
             if desired_state == State.ERROR:
                 raise Exception("Could not get temperature")
@@ -20,5 +21,3 @@ class TemperatureHandler(Handler):
                 new_state: State = self._fan.set(desired_state)
                 if new_state != desired_state and new_state != State.BLOCK:
                     raise Exception("Could not set fan correctly")
-
-            time.sleep(self._sleep_time)
