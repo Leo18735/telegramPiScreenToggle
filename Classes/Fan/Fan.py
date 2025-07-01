@@ -1,31 +1,34 @@
 import typing
-
-from Classes.State.StateIn import StateIn
-from Classes.State.StateOut import StateOut
+from Classes.State import State
 from Classes.Fan.GPIO import GPIO
+import RPi.GPIO
 
 
 class Fan:
     def __init__(self, pin: int, *_, **__):
         self._pin: int = pin
-        self._state: typing.Optional[StateOut] = None
-        self._state = self.set(StateIn.OFF)
+        GPIO.set_state(self._pin, RPi.GPIO.LOW)
+        self._state = State.OFF
+        self._block: bool = False
 
-    def set(self, state: StateIn) -> StateOut:
-        new_state: typing.Optional[StateIn] = None
-        match (self._state, state):
-            case (StateOut.BLOCK, StateIn.UNBLOCK):
-                new_state = StateIn.OFF
-            case (StateOut.BLOCK, _):
-                return StateOut.BLOCK
-            case (s1, s2) if s1 == s2:
-                return self._state
-            case (_, s) if s in (StateIn.ON, StateIn.OFF):
-                new_state = s
-            case (s1, s2):
-                raise Exception(f"Unhandled {s1.name} {s2.name}")
-        self._state = GPIO.set_state(self._pin, new_state)
-        return self.get()
+    def set(self, state: State, block: typing.Optional[bool] = None):
+        if block is not None:
+            self._block = block
+            return
+        if self._block:
+            return
+        if state == self._state:
+            return
+        if state not in (State.ON, State.OFF):
+            return
 
-    def get(self) -> StateOut:
-        return self._state
+        if state == State.ON:
+            new_state = RPi.GPIO.HIGH
+        elif state == State.OFF:
+            new_state = RPi.GPIO.LOW
+        else:
+            raise Exception(f"Unknown state {state.name}")
+        GPIO.set_state(self._pin, new_state)
+
+    def get(self) -> dict:
+        return {"state": self._state.name, "block": self._block}

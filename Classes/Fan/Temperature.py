@@ -1,7 +1,7 @@
 import re
 import typing
 
-from Classes.State.StateIn import StateIn
+from Classes.State import State
 from Utils.utils import execute
 
 
@@ -22,9 +22,10 @@ class Temperature:
         finally:
             raise Exception("Could not get temp")
 
-    def get_change(self) -> typing.Optional[StateIn]:
+    def get_change(self) -> typing.Optional[State]:
         temp: float = self.get()
         if temp > self._max_temp:
-            return StateIn.ON
+            return State.ON
         if temp < self._min_temp:
-            return StateIn.OFF
+            return State.OFF
+        return None

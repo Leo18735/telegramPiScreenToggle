@@ -3,8 +3,7 @@ import typing
 from Classes.Handler.Handler import Handler
 from Classes.Fan.Temperature import Temperature
 from Classes.Fan.Fan import Fan
-from Classes.State.StateIn import StateIn
-from Classes.State.StateOut import StateOut
+from Classes.State import State
 
 
 class TemperatureHandler(Handler):
@@ -16,12 +15,7 @@ class TemperatureHandler(Handler):
     def run(self):
         while True:
             time.sleep(self._sleep_time)
-            desired_state: typing.Optional[StateIn] = self._temperature.get_change()
+            desired_state: typing.Optional[State] = self._temperature.get_change()
             if desired_state is None:
                 continue
-            new_state: StateOut = self._fan.set(desired_state)
-            if new_state == StateOut.BLOCK:
-                continue
-            if new_state == desired_state:
-                continue
-            raise Exception("Could not set fan")
+            self._fan.set(desired_state)
