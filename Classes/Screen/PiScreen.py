@@ -19,6 +19,7 @@ class PiScreen:
         else:
             raise Exception(f"Unknown state {state.name}")
         print(f"Set screen {new_state}")
+        self._state = state
         if execute(f"{self._command} --{new_state}")[2] != 0:
             raise Exception("Could not set screen state")
 

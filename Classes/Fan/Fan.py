@@ -29,6 +29,7 @@ class Fan:
         else:
             raise Exception(f"Unknown state {state.name}")
         print(f"Set fan {new_state}")
+        self._state = state
         GPIO.set_state(self._pin, new_state)
 
     def get(self) -> dict:
