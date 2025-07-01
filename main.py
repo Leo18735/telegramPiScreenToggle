@@ -4,12 +4,8 @@ import os
 import sys
 import json
 import typing
-from unittest.mock import MagicMock
 if sys.platform == "win32":
-    sys.modules['RPi'] = MagicMock()
-    sys.modules['RPi.GPIO'] = MagicMock()
     from Utils import utils
-
 
     def mock_execute(cmd: str) -> tuple[str, str, int]:
         result: typing.Optional[str] = None

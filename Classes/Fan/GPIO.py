@@ -1,3 +1,8 @@
+import sys
+from unittest.mock import MagicMock
+if sys.platform == "win32":
+    sys.modules['RPi'] = MagicMock()
+    sys.modules['RPi.GPIO'] = MagicMock()
 import RPi.GPIO
 from Classes.State import State
 

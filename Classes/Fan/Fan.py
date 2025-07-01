@@ -9,14 +9,21 @@ class Fan:
         self._state = self.set(State.OFF)
 
     def set(self, state: State) -> State:
-        if self._state == State.BLOCK and state != State.OFF:
-            return self._state
-        if state == self._state or state == state.NO_CHANGE:
-            return State.NO_CHANGE
-        if state == State.BLOCK:
-            GPIO.set_state(self._pin, State.OFF)
-        else:
-            GPIO.set_state(self._pin, state)
+        new_state: State = State.ERROR
+        match (self._state, state):
+            case (s1, s2) if s1 == s2:
+                return State.NO_CHANGE
+            case (_, s) if s == State.NO_CHANGE:
+                return State.NO_CHANGE
+            case (_, s) if s == State.ERROR:
+                return State.NO_CHANGE
+            case (State.BLOCK, s) if s != State.OFF:
+                return State.BLOCK
+            case (_, s) if s == State.BLOCK:
+                new_state = State.OFF
+            case (_, s):
+                new_state = s
+        GPIO.set_state(self._pin, new_state)
         self._state = state
         return self._state
 
