@@ -53,6 +53,7 @@ def main():
     telegram_handler: TelegramHandler = TelegramHandler(temperature, fan, pi_screen, token)
     socket_handler: SocketHandler = SocketHandler(fan, pi_screen, **config_socket_handler)
 
+    threading.Thread(target=temperature.run).start()
     threading.Thread(target=temperature_handler.run).start()
     threading.Thread(target=socket_handler.run).start()
     telegram_handler.run()
