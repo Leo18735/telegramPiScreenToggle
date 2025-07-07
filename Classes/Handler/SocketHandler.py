@@ -32,7 +32,7 @@ class SocketHandler(Handler):
         }
 
     def _status_handler(self, *_, **__) -> str:
-        return json.dumps({"fan": self._fan.get_state(), "screen": self._pi_screen.get_state(), "temp": sel})
+        return json.dumps({"fan": self._fan.get_state(), "screen": self._pi_screen.get_state(), "temp": self._temperature.get_state})
 
     @staticmethod
     def _handle_error(state: State, *_, **__):
@@ -51,6 +51,8 @@ class SocketHandler(Handler):
                 args += [State.OFF, True]
             case ("fan", "3"):
                 args += [State.OFF, False]
+            case ("sta", _):
+                pass
             case s:
                 raise Exception(f"Unknown state {s.name}")
         return self._handlers.get(data[:3], self._handle_error)(*args)
