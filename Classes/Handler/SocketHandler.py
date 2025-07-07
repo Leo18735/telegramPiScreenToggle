@@ -32,7 +32,7 @@ class SocketHandler(Handler):
         }
 
     def _status_handler(self, *_, **__) -> str:
-        return json.dumps({"fan": self._fan.get_state(), "screen": self._pi_screen.get_state(), "temp": self._temperature.get_state})
+        return json.dumps({"fan": self._fan.get_state(), "screen": self._pi_screen.get_state(), "temp": self._temperature.get_state()})
 
     @staticmethod
     def _handle_error(state: State, *_, **__):
