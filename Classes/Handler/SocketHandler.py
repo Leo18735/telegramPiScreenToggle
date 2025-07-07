@@ -28,30 +28,37 @@ class SocketHandler(Handler):
         }
 
     @staticmethod
-    def _handle_error(state: State):
-        print(f"[ERROR] Unrecognized or invalid input: {state.name}")
+    def _handle_error(state: State, *_, **__):
+        raise Exception(f"[ERROR] Unrecognized or invalid input: {state.name}")
 
     def _handle(self, data: str):
         if len(data) != 4:
             return
-        state: typing.Optional[State] = None
-        match data[3]:
-            case "0":
-                state = State.OFF
-            case "1":
-                state = State.ON
+        args: list[State | bool] = []
+        match data[:3], data[3]:
+            case (s, "0") if s in ["fan", "scr"]:
+                args.append(State.OFF)
+            case (s, "1") if s in ["fan", "scr"]:
+                args.append(State.ON)
+            case ("fan", "2"):
+                args += [State.OFF, True]
+            case ("fan", "3"):
+                args += [State.OFF, False]
             case s:
                 raise Exception(f"Unknown state {s.name}")
-        self._handlers.get(data[:3], self._handle_error)(state)
+        self._handlers.get(data[:3], self._handle_error)(*args)
 
     def run(self):
         try:
             while True:
                 client_sock, address = self._socket.accept()
                 with client_sock:
-                    data = client_sock.recv(4)
-                    if not data:
-                        continue
-                    self._handle(data.decode("utf-8"))
+                    try:
+                        data = client_sock.recv(4)
+                        if not data:
+                            continue
+                        self._handle(data.decode("utf-8"))
+                    except Exception as e:
+                        print(f"Exception: {e}")
         finally:
             self._socket.close()
