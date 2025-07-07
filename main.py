@@ -51,7 +51,7 @@ def main():
 
     temperature_handler: TemperatureHandler = TemperatureHandler(temperature, fan, **config_temperature_handler)
     telegram_handler: TelegramHandler = TelegramHandler(temperature, fan, pi_screen, token)
-    socket_handler: SocketHandler = SocketHandler(fan, pi_screen, **config_socket_handler)
+    socket_handler: SocketHandler = SocketHandler(fan, pi_screen, temperature, **config_socket_handler)
 
     threading.Thread(target=temperature.run).start()
     threading.Thread(target=temperature_handler.run).start()

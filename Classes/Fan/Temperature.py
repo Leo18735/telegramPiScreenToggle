@@ -37,8 +37,8 @@ class Temperature(StateCommand, Handler):
             return State.OFF
         return None
 
-    def get_text(self) -> str:
-        return f"\tTemp: {self.get()}\n\tMax: {self._get_max()}\n\tMin: {self._get_min()}"
+    def get_state(self) -> dict:
+        return {"Temp": self.get(), "Max": self._get_max(), "Min": self._get_min()}
 
     def _get_max(self) -> float:
         return max(self._past_temperatures)

@@ -37,9 +37,10 @@ class TelegramHandler(Handler):
         await self._change_fan_state(State.OFF, False)
 
     async def _state_command(self, update: Update, __: ContextTypes.DEFAULT_TYPE):
-        await self._reply(update, f"Screen\n{self._pi_screen.get_text()}\n"
-                                  f"Fan\n{self._fan.get_text()}\n"
-                                  f"Temp\n{self._temperature.get_text()}")
+        reply = ("Screen\n\t" + "\n\t".join(f"{key}: {value}" for key, value in self._pi_screen.get_state()) +
+                 "\nFan\n\t" + "\n\t".join(f"{key}: {value}" for key, value in self._fan.get_state()) +
+                 "\nTemp\n\t" + "\n\t".join(f"{key}: {value}" for key, value in self._temperature.get_state()))
+        await self._reply(update, reply)
 
     @classmethod
     async def _help_command(cls, update: Update, __: ContextTypes.DEFAULT_TYPE):

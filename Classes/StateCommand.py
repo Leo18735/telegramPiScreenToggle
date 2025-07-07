@@ -3,5 +3,5 @@ import abc
 
 class StateCommand(metaclass=abc.ABCMeta):
     @abc.abstractmethod
-    def get_text(self) -> str:
+    def get_state(self) -> dict:
         pass

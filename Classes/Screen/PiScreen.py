@@ -34,5 +34,5 @@ class PiScreen(StateCommand):
             raise Exception("Could not get screen state")
         return State.ON if matches[0] == "yes" else State.OFF
 
-    def get_text(self) -> str:
-        return f"\tState: {self._state.name}"
+    def get_state(self) -> dict:
+        return {"State": self._state.name}

@@ -33,5 +33,5 @@ class Fan(StateCommand):
         self._state = state
         GPIO.set_state(self._pin, new_state)
 
-    def get_text(self) -> str:
-        return f"\tState: {self._state.name}\n\tBlock: {'True' if self._block else 'False'}"
+    def get_state(self) -> dict:
+        return {"State": self._state.name, "Block": self._block}
