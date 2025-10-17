@@ -5,15 +5,8 @@ from Classes.Controller.BaseController import BaseController
 
 class BaseExecutionController(BaseController, abc.ABC):
     @staticmethod
-    def _decode(std: bytes) -> str:
-        return std.decode(encoding="utf-8", errors="ignore")
-
-    @classmethod
-    def _execute(cls, command: str) -> tuple[str, str, int]:
-        process: subprocess.Popen = subprocess.Popen(
-            command.split(" "),
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE
-        )
+    def execute(cmd: str) -> tuple[str, str, int]:
+        process = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
         stdout, stderr = process.communicate()
-        return cls._decode(stdout), cls._decode(stderr), process.returncode
+        code = process.returncode
+        return stdout, stderr, code
