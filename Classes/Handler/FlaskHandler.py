@@ -28,7 +28,7 @@ class FlaskHandler(FlaskWrapper):
     def _add_routes(self):
         @self._app.route("/api/v1/ping")
         def _api_v1_ping():
-            return
+            return ""
 
         @self._app.route("/api/v1/fan/set/<value>")
         def _fan_set(value: str):
