@@ -1,5 +1,39 @@
 {
-    "fan_controller": {
-        "pin": 21
+    "controller": {
+        "fan_controller": {
+            "pin": 21
+        }
+    },
+    "handler": {
+        "flask_handler": {
+            "host": "0.0.0.0",
+            "port": 5000
+        },
+        "time_handler": {
+            "tasks": [
+                {
+                    "time": "21:00",
+                    "endpoint": "brightness/set/50"
+                },
+                {
+                    "time": "9:00",
+                    "endpoint": "brightness/set/255"
+                }
+            ]
+        },
+        "temperature_handler": {
+            "tasks": [
+                {
+                    "temperature": 45,
+                    "condition": "<",
+                    "endpoint": "fan/set/off"
+                },
+                {
+                    "temperature": 55,
+                    "condition": ">",
+                    "endpoint": "fan/set/on"
+                }
+            ]
+        }
     }
 }
