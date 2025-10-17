@@ -13,14 +13,14 @@ class Task:
 
 class TemperatureHandler(BaseHandler):
     def __init__(self, tasks: dict):
-        self._old_temperature: typing.Optional[float] = self._get_temperature()
+        self._old_temperature: typing.Optional[float] = None
         self._tasks: list[Task] = [Task(**task) for task in tasks]
 
     def _get_temperature(self) -> float:
         return self._request("temperature/get").json().get("data").get("state")
 
     def run(self):
-        time.sleep(10)
+        self._old_temperature = self._get_temperature()
         while True:
             temperature: float = self._get_temperature()
             for task in self._tasks:

@@ -21,7 +21,6 @@ class TimeHandler(BaseHandler):
         self._tasks: list[Task] = [Task.from_dict(task) for task in tasks]
 
     def run(self):
-        time.sleep(10)
         while True:
             c_time: datetime = datetime.now()
             for task in self._tasks:
