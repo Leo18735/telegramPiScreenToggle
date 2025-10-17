@@ -26,6 +26,10 @@ class FlaskHandler(FlaskWrapper):
         self._brightness_controller: BrightnessController = brightness_controller
 
     def _add_routes(self):
+        @self._app.route("/")
+        def _root():
+            return
+
         @self._app.route("/api/v1/fan/set/<value>")
         def _fan_set(value: str):
             if value not in ["on", "off"]:
