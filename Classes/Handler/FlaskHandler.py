@@ -60,7 +60,7 @@ class FlaskHandler(FlaskWrapper):
             except Exception as e:
                 return self._error(-1, str(e))
 
-        @self._app.route("/api/v1/screen/set/<int:value>")
+        @self._app.route("/api/v1/brightness/set/<int:value>")
         def _brightness_set(value: int):
             if value > 255 or value < 0:
                 return self._error(2)
@@ -70,7 +70,7 @@ class FlaskHandler(FlaskWrapper):
                 return self._error(-1, str(e))
             return self._error(0)
 
-        @self._app.route("/api/v1/screen/get")
+        @self._app.route("/api/v1/brightness/get")
         def _brightness_get():
             try:
                 return self._error(0, data={"state": self._brightness_controller.get_state()})
