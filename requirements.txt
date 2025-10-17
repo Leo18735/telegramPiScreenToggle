@@ -1,3 +1,4 @@
 --trusted-host 192.168.0.249:5005
 --extra-index-url http://192.168.0.249:5005/simple
 flaskwrapper
+requests==2.32.5
