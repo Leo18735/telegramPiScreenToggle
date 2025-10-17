@@ -1,0 +1,5 @@
+{
+    "fan_controller": {
+        "pin": 21
+    }
+}
