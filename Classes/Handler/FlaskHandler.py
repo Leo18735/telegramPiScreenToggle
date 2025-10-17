@@ -10,7 +10,8 @@ class FlaskHandler(FlaskWrapper):
     _errors = {
         0: "",
         1: "value not in ['on', 'off']",
-        2: "value > 255 | < 0"
+        2: "value > 255 | < 0",
+        1: "value not in ['on', 'off', 'block', 'unblock']"
     }
 
     def __init__(self,
@@ -32,10 +33,10 @@ class FlaskHandler(FlaskWrapper):
 
         @self._app.route("/api/v1/fan/set/<value>")
         def _fan_set(value: str):
-            if value not in ["on", "off"]:
-                return self._error(1)
+            if value not in ["on", "off", "block", "unblock"]:
+                return self._error(3)
             try:
-                self._fan_controller.set_state(value == "on")
+                self._fan_controller.set_state(value)
             except Exception as e:
                 return self._error(-1, str(e))
             return self._error(0)
