@@ -1,3 +1,4 @@
+import re
 from Classes.Controller.BaseController import BaseController
 
 
@@ -10,4 +11,4 @@ class BrightnessController(BaseController):
 
     def get_state(self):
         with open(self._file, "r") as f:
-            return f.read()
+            return re.findall(r"\d+", f.read())[0]
