@@ -26,12 +26,8 @@ class FlaskHandler(FlaskWrapper):
         self._brightness_controller: BrightnessController = brightness_controller
 
     def _add_routes(self):
-        @self._app.route("/")
-        def _root():
-            return
-
-        @self._app.route("/api/v1")
-        def _api_v1():
+        @self._app.route("/api/v1/ping")
+        def _api_v1_ping():
             return
 
         @self._app.route("/api/v1/fan/set/<value>")
