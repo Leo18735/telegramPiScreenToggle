@@ -2,6 +2,8 @@ import dataclasses
 import time
 from datetime import datetime
 from Classes.Handler.BaseHandler import BaseHandler
+import typing
+
 
 @dataclasses.dataclass
 class Task:
@@ -16,12 +18,12 @@ class Task:
 
 
 class TimeHandler(BaseHandler):
-    def __init__(self, tasks: dict):
+    def __init__(self, tasks: list[dict]):
         self._old_time: datetime = datetime.now()
         self._tasks: list[Task] = [Task.from_dict(task) for task in tasks]
 
-    def run(self):
-        while True:
+    def run(self, run_condition: typing.Callable[[], bool] = lambda: True):
+        while run_condition():
             c_time: datetime = datetime.now()
             for task in self._tasks:
                 if self._old_time < task.time.replace(year=c_time.year, month=c_time.month, day=c_time.day) <= c_time:
