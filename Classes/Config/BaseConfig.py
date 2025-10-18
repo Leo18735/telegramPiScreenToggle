@@ -3,9 +3,12 @@ from __future__ import annotations
 import abc
 import inspect
 import typing
+import threading
 
 
 class BaseConfig(abc.ABC):
+    _lock: threading.Lock = threading.Lock()
+
     @staticmethod
     def _custom_loader(obj: BaseConfig, key: str, value):
         method_name: str = f"_custom_{key}"
@@ -26,3 +29,16 @@ class BaseConfig(abc.ABC):
                 continue
             setattr(self, key, self._custom_loader(self, key, value))
         return self
+
+    def __getattribute__(self, name):
+        if name in ("_lock", "__dict__", "__class__"):  # avoid recursion
+            return object.__getattribute__(self, name)
+        with object.__getattribute__(self, "_lock"):
+            return object.__getattribute__(self, name)
+
+    def __setattr__(self, name, value):
+        if name in ("_lock", "__dict__", "__class__"):
+            object.__setattr__(self, name, value)
+        else:
+            with self._lock:
+                object.__setattr__(self, name, value)
