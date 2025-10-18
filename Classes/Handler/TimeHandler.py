@@ -19,6 +19,7 @@ class Task:
 
 class TimeHandler(BaseHandler):
     def __init__(self, tasks: list[dict]):
+        super().__init__()
         self._old_time: datetime = datetime.now()
         self._tasks: list[Task] = [Task.from_dict(task) for task in tasks]
 

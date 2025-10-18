@@ -13,9 +13,9 @@ from Classes.Handler.TemperatureHandler import TemperatureHandler
 from Classes.Handler.TimeHandler import TimeHandler
 
 
-def delayed(method: typing.Callable, *args, **kwargs):
+def delayed(handler_class: type[BaseHandler], *args, **kwargs):
     time.sleep(10)
-    method(*args, **kwargs)
+    handler_class(*args, **kwargs).run()
 
 
 def main():
@@ -30,8 +30,8 @@ def main():
 
     config_handler: dict = config.get("handler")
     BaseHandler.port = config_handler.get("flask_handler").get("port")
-    threading.Thread(target=lambda: delayed(TimeHandler(**config_handler.get("time_handler")).run)).start()
-    threading.Thread(target=lambda: delayed(TemperatureHandler(**config_handler.get("temperature_handler")).run)).start()
+    threading.Thread(target=delayed, args=(TimeHandler, ), kwargs=config_handler.get("time_handler")).start()
+    threading.Thread(target=delayed, args=(TemperatureHandler, ), kwargs=config_handler.get("temperature_handler")).start()
     FlaskHandler(
         fan_controller,
         screen_controller,

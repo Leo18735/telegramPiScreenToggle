@@ -18,6 +18,7 @@ class Task:
 
 class TemperatureHandler(BaseHandler):
     def __init__(self, tasks: list[dict]):
+        super().__init__()
         self._old_temperature: typing.Optional[float] = None
         self._tasks: list[Task] = [Task(**task) for task in tasks]
 
