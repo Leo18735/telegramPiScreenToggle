@@ -1,14 +1,19 @@
 {
     "controller": {
+        "brightness_controller": {
+            "file": "/sys/class/backlight/10-0045/brightness"
+        },
         "fan_controller": {
             "pin": 21
+        },
+        "screen_controller": {
+            "command": "XDG_RUNTIME_DIR=/run/user/1000 wlr-randr --output DSI-1"
+        },
+        "temperature_controller": {
+            "command": "vcgencmd measure_temp"
         }
     },
     "handler": {
-        "flask_handler": {
-            "host": "0.0.0.0",
-            "port": 5000
-        },
         "time_handler": {
             "tasks": [
                 {
@@ -34,6 +39,10 @@
                     "endpoint": "fan/set/on"
                 }
             ]
+        },
+        "flask_handler": {
+            "port": 5000,
+            "ip": "0.0.0.0"
         }
     }
 }

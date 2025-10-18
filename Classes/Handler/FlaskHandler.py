@@ -1,12 +1,14 @@
 from flask_wrapper.FlaskWrapper import FlaskWrapper
 
+from Classes.BaseConfigHolder import BaseConfigHolder
+from Classes.Config.Config import FlaskHandlerConfig
 from Classes.Controller.BrightnessController import BrightnessController
 from Classes.Controller.FanController import FanController
 from Classes.Controller.ScreenController import ScreenController
 from Classes.Controller.TemperatureController import TemperatureController
 
 
-class FlaskHandler(FlaskWrapper):
+class FlaskHandler(FlaskWrapper, BaseConfigHolder[FlaskHandlerConfig]):
     _errors = {
         0: "",
         1: "value not in ['on', 'off']",
@@ -20,7 +22,9 @@ class FlaskHandler(FlaskWrapper):
                  temperature_controller: TemperatureController,
                  brightness_controller: BrightnessController,
                  *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        BaseConfigHolder.__init__(self, *args, **kwargs)
+        FlaskWrapper.__init__(self, "telegramPiScreenToggle", self._config.ip, self._config.port)
+
         self._fan_controller: FanController = fan_controller
         self._screen_controller: ScreenController = screen_controller
         self._temperature_controller: TemperatureController = temperature_controller

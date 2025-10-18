@@ -1,13 +1,12 @@
 import re
 
+from Classes.Config.Config import TemperatureControllerConfig
 from Classes.Controller.BaseExecutionController import BaseExecutionController
 
 
-class TemperatureController(BaseExecutionController):
-    _base_command: str = "vcgencmd measure_temp"
-
+class TemperatureController(BaseExecutionController[TemperatureControllerConfig]):
     def get_state(self) -> float:
-        stdout, stderr, code = self._execute(self._base_command)
+        stdout, stderr, code = self._execute(self._config.command)
         if code != 0:
             raise Exception(f"Could not get temperature. {stderr}")
         return float(re.findall(r"temp=(\d+\.\d+)'C", stdout)[0])
