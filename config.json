@@ -17,7 +17,7 @@
         "time_handler": {
             "tasks": [
                 {
-                    "time": "21:00",
+                    "time": "19:00",
                     "endpoint": "brightness/set/25"
                 },
                 {
