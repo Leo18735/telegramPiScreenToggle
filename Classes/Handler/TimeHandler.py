@@ -1,8 +1,9 @@
 import dataclasses
 import time
-from datetime import datetime
-from Classes.Handler.BaseHandler import BaseHandler
 import typing
+from datetime import datetime
+
+from Classes.Handler.BaseHandler import BaseHandler
 
 
 @dataclasses.dataclass

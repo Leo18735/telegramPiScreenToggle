@@ -11,7 +11,7 @@ class FlaskHandler(FlaskWrapper):
         0: "",
         1: "value not in ['on', 'off']",
         2: "value > 255 | < 0",
-        1: "value not in ['on', 'off', 'block', 'unblock']"
+        3: "value not in ['on', 'off', 'block', 'unblock']"
     }
 
     def __init__(self,

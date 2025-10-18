@@ -1,4 +1,5 @@
 import unittest.mock
+
 from Classes.Handler.TimeHandler import TimeHandler, Task, datetime
 
 
@@ -43,6 +44,7 @@ class TestTimeHandler(unittest.TestCase):
         }])
 
         self.called: int = 0
+
         def _run_once() -> bool:
             if self.called == len(mocked_dates) - 1:
                 return False

@@ -1,7 +1,7 @@
 import json
+import os
 import threading
 import time
-import typing
 
 from Classes.Controller.BrightnessController import BrightnessController
 from Classes.Controller.FanController import FanController
@@ -11,6 +11,8 @@ from Classes.Handler.BaseHandler import BaseHandler
 from Classes.Handler.FlaskHandler import FlaskHandler
 from Classes.Handler.TemperatureHandler import TemperatureHandler
 from Classes.Handler.TimeHandler import TimeHandler
+
+os.environ["PYTHONUNBUFFERED"] = "1"
 
 
 def delayed(handler_class: type[BaseHandler], *args, **kwargs):
@@ -30,8 +32,9 @@ def main():
 
     config_handler: dict = config.get("handler")
     BaseHandler.port = config_handler.get("flask_handler").get("port")
-    threading.Thread(target=delayed, args=(TimeHandler, ), kwargs=config_handler.get("time_handler")).start()
-    threading.Thread(target=delayed, args=(TemperatureHandler, ), kwargs=config_handler.get("temperature_handler")).start()
+    threading.Thread(target=delayed, args=(TimeHandler,), kwargs=config_handler.get("time_handler")).start()
+    threading.Thread(target=delayed, args=(TemperatureHandler,),
+                     kwargs=config_handler.get("temperature_handler")).start()
     FlaskHandler(
         fan_controller,
         screen_controller,
