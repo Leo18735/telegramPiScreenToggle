@@ -1,5 +1,4 @@
 import json
-import os
 import threading
 import time
 
@@ -11,8 +10,6 @@ from Classes.Handler.BaseHandler import BaseHandler
 from Classes.Handler.FlaskHandler import FlaskHandler
 from Classes.Handler.TemperatureHandler import TemperatureHandler
 from Classes.Handler.TimeHandler import TimeHandler
-
-os.environ["PYTHONUNBUFFERED"] = "1"
 
 
 def delayed(handler_class: type[BaseHandler], *args, **kwargs):
