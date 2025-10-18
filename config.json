@@ -13,7 +13,7 @@
             "tasks": [
                 {
                     "time": "21:00",
-                    "endpoint": "brightness/set/50"
+                    "endpoint": "brightness/set/25"
                 },
                 {
                     "time": "9:00",
