@@ -1,6 +1,6 @@
 import re
 
-from Classes.Config.Config import ScreenControllerConfig
+from Classes.Config.ControllerConfigs.ScreenControllerConfig import ScreenControllerConfig
 from Classes.Controller.BaseExecutionController import BaseExecutionController
 
 

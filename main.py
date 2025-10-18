@@ -1,5 +1,6 @@
 import threading
 import time
+
 from Classes.Config.Config import Config
 from Classes.Controller.BrightnessController import BrightnessController
 from Classes.Controller.FanController import FanController

@@ -1,6 +1,6 @@
 import re
 
-from Classes.Config.Config import BrightnessControllerConfig
+from Classes.Config.ControllerConfigs.BrightnessControllerConfig import BrightnessControllerConfig
 from Classes.Controller.BaseController import BaseController
 
 

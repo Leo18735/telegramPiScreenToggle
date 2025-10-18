@@ -1,7 +1,7 @@
 from flask_wrapper.FlaskWrapper import FlaskWrapper
 
 from Classes.BaseConfigHolder import BaseConfigHolder
-from Classes.Config.Config import FlaskHandlerConfig
+from Classes.Config.HandlerConfigs.FlaskHandlerConfig import FlaskHandlerConfig
 from Classes.Controller.BrightnessController import BrightnessController
 from Classes.Controller.FanController import FanController
 from Classes.Controller.ScreenController import ScreenController

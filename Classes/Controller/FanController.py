@@ -1,6 +1,6 @@
 import threading
 
-from Classes.Config.Config import FanControllerConfig
+from Classes.Config.ControllerConfigs.FanControllerConfig import FanControllerConfig
 from Classes.Controller.BaseGpioController import BaseGpioController
 
 

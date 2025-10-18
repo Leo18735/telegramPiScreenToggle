@@ -1,6 +1,6 @@
 import re
 
-from Classes.Config.Config import TemperatureControllerConfig
+from Classes.Config.ControllerConfigs.TemperatureControllerConfig import TemperatureControllerConfig
 from Classes.Controller.BaseExecutionController import BaseExecutionController
 
 

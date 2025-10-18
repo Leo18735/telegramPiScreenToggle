@@ -1,99 +1,15 @@
 from __future__ import annotations
 
-import abc
 import dataclasses
-import inspect
 import json
 import re
 import threading
 import time
 import typing
 
-from Classes.Handler.TemperatureHandler.Task import Task as TemperatureTask
-from Classes.Handler.TimeHandler.Task import Task as TimeTask
-
-
-class BaseConfig(abc.ABC):
-    @staticmethod
-    def _custom_loader(obj: BaseConfig, key: str, value):
-        method_name: str = f"_custom_{key}"
-        if not hasattr(obj, method_name):
-            return value
-        method: typing.Callable = getattr(obj, method_name)
-        if not inspect.isfunction(method):
-            return value
-        return method(value)
-
-    def load_config(self, config: dict):
-        for key, obj in self.__dict__.items():
-            if key.startswith("_"):
-                continue
-            value = config.get(key)
-            if isinstance(obj, BaseConfig):
-                obj.load_config(value)
-                continue
-            setattr(self, key, self._custom_loader(self, key, value))
-        return self
-
-
-@dataclasses.dataclass
-class BrightnessControllerConfig(BaseConfig):
-    file: str = None
-
-
-@dataclasses.dataclass
-class FanControllerConfig(BaseConfig):
-    pin: int = None
-
-
-@dataclasses.dataclass
-class ScreenControllerConfig(BaseConfig):
-    command: str = None
-
-
-@dataclasses.dataclass
-class TemperatureControllerConfig(BaseConfig):
-    command: str = None
-
-
-@dataclasses.dataclass
-class ControllerConfig(BaseConfig):
-    brightness_controller: BrightnessControllerConfig = dataclasses.field(default_factory=BrightnessControllerConfig)
-    fan_controller: FanControllerConfig = dataclasses.field(default_factory=FanControllerConfig)
-    temperature_controller: TemperatureControllerConfig = dataclasses.field(default_factory=TemperatureControllerConfig)
-    screen_controller: ScreenControllerConfig = dataclasses.field(default_factory=ScreenControllerConfig)
-
-
-@dataclasses.dataclass
-class TimeHandlerConfig(BaseConfig):
-    tasks: list[TimeTask] = None
-
-    @staticmethod
-    def _custom_tasks(data: list[dict]) -> list[TimeTask]:
-        return [TimeTask.from_dict(x) for x in data]
-
-
-@dataclasses.dataclass
-class TemperatureHandlerConfig(BaseConfig):
-    tasks: list[TemperatureTask] = None
-
-    @staticmethod
-    def _custom_tasks(data: list[dict]) -> list[TemperatureTask]:
-        return [TemperatureTask.from_dict(x) for x in data]
-
-
-@dataclasses.dataclass
-class FlaskHandlerConfig(BaseConfig):
-    ip: str = None
-    port: int = None
-
-
-@dataclasses.dataclass
-class HandlerConfig(BaseConfig):
-    time_handler: TimeHandlerConfig = dataclasses.field(default_factory=TimeHandlerConfig)
-    temperature_handler: TemperatureHandlerConfig = dataclasses.field(default_factory=TemperatureHandlerConfig)
-    flask_handler: FlaskHandlerConfig = dataclasses.field(default_factory=FlaskHandlerConfig)
-
+from Classes.Config.BaseConfig import BaseConfig
+from Classes.Config.ControllerConfig import ControllerConfig
+from Classes.Config.HandlerConfig import HandlerConfig
 
 C = typing.TypeVar("C", bound=BaseConfig)
 

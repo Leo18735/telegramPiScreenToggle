@@ -1,7 +1,7 @@
 import time
 import typing
 
-from Classes.Config.Config import TemperatureHandlerConfig
+from Classes.Config.HandlerConfigs.TemperatureHandlerConfig import TemperatureHandlerConfig
 from Classes.Handler.BaseHandler import BaseHandler
 
 
