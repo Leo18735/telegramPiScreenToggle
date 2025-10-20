@@ -7,8 +7,8 @@ from Classes.Controller.FanController import FanController
 from Classes.Controller.ScreenController import ScreenController
 from Classes.Controller.TemperatureController import TemperatureController
 from Classes.Handler.BaseHandler import BaseHandler
+from Classes.Handler.ConditionHandler.ConditionHandler import ConditionHandler
 from Classes.Handler.FlaskHandler import FlaskHandler
-from Classes.Handler.TemperatureHandler.TemperatureHandler import TemperatureHandler
 from Classes.Handler.TimeHandler.TimeHandler import TimeHandler
 
 
@@ -18,7 +18,7 @@ def delayed(handler_class: type[BaseHandler], *args):
 
 
 def main():
-    config: Config = Config.load_config_file("config.json", 600)
+    config: Config = Config.load_config_file("config.json")
 
     fan_controller: FanController = FanController(config)
     screen_controller: ScreenController = ScreenController(config)
@@ -26,7 +26,7 @@ def main():
     brightness_controller: BrightnessController = BrightnessController(config)
 
     threading.Thread(target=delayed, args=(TimeHandler, config)).start()
-    threading.Thread(target=delayed, args=(TemperatureHandler, config)).start()
+    threading.Thread(target=delayed, args=(ConditionHandler, config)).start()
     FlaskHandler(
         fan_controller,
         screen_controller,

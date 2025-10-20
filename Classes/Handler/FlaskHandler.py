@@ -30,6 +30,11 @@ class FlaskHandler(FlaskWrapper, BaseConfigHolder[FlaskHandlerConfig]):
         self._temperature_controller: TemperatureController = temperature_controller
         self._brightness_controller: BrightnessController = brightness_controller
 
+    def run(self):
+        if self._config.ip not in ["0.0.0.0", "127.0.0.1"]:
+            return
+        super().run()
+
     def _add_routes(self):
         @self._app.route("/api/v1/ping")
         def _api_v1_ping():

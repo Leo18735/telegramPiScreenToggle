@@ -1,7 +1,6 @@
 import abc
 
 import RPi.GPIO
-
 from Classes.Controller.BaseController import BaseController, C
 
 

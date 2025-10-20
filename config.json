@@ -1,4 +1,5 @@
 {
+    "reload_interval": 600,
     "controller": {
         "brightness_controller": {
             "file": "/sys/class/backlight/10-0045/brightness"
@@ -15,28 +16,74 @@
     },
     "handler": {
         "time_handler": {
+            "interval": 60,
             "tasks": [
                 {
                     "time": "19:00",
                     "endpoint": "brightness/set/25"
                 },
                 {
-                    "time": "9:00",
+                    "time": "8:00",
                     "endpoint": "brightness/set/255"
                 }
             ]
         },
-        "temperature_handler": {
+        "condition_handler": {
+            "interval": 30,
             "tasks": [
                 {
-                    "temperature": 45,
-                    "condition": "<",
-                    "endpoint": "fan/set/off"
+                    "endpoint": "fan/set/on",
+                    "conditions": [
+                        {
+                            "value1": {
+                                "value": "fan/get",
+                                "type": "endpoint"
+                            },
+                            "value2": {
+                                "value": "off",
+                                "type": "value"
+                            },
+                            "comparator": "="
+                        },
+                        {
+                            "value1": {
+                                "value": "temperature/get",
+                                "type": "endpoint"
+                            },
+                            "value2": {
+                                "value": 55.0,
+                                "type": "value"
+                            },
+                            "comparator": ">"
+                        }
+                    ]
                 },
                 {
-                    "temperature": 55,
-                    "condition": ">",
-                    "endpoint": "fan/set/on"
+                    "endpoint": "fan/set/off",
+                    "conditions": [
+                        {
+                            "value1": {
+                                "value": "fan/get",
+                                "type": "endpoint"
+                            },
+                            "value2": {
+                                "value": "on",
+                                "type": "value"
+                            },
+                            "comparator": "="
+                        },
+                        {
+                            "value1": {
+                                "value": "temperature/get",
+                                "type": "endpoint"
+                            },
+                            "value2": {
+                                "value": 45.0,
+                                "type": "value"
+                            },
+                            "comparator": "<"
+                        }
+                    ]
                 }
             ]
         },

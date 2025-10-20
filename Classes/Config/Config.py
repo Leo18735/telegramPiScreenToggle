@@ -19,24 +19,30 @@ class Config(BaseConfig):
     controller: ControllerConfig = dataclasses.field(default_factory=ControllerConfig)
     handler: HandlerConfig = dataclasses.field(default_factory=HandlerConfig)
     _file: str = None
-    _reload_interval: int = None
+    reload_interval: int = None
+    _load_complete: bool = False
 
     @classmethod
-    def load_config_file(cls, file: str, reload_interval: int) -> typing.Self:
-        return cls(_file=file, _reload_interval=reload_interval)._reload()
+    def load_config_file(cls, file: str) -> typing.Self:
+        return cls(_file=file)
 
     def __post_init__(self):
+        self._reload(True)
+        while not self._load_complete:
+            time.sleep(1)
         threading.Thread(target=self._reload_thread, daemon=True).start()
 
     def _reload_thread(self):
         while True:
-            time.sleep(self._reload_interval)
+            time.sleep(self.reload_interval)
             self._reload()
 
-    def _reload(self):
+    def _reload(self, init: bool = False):
         with open(self._file, "r") as f:
             config: dict = json.load(f)
-        return self.load_config(config)
+        self.load_config(config)
+        if init:
+            self._load_complete = True
 
     @classmethod
     def _find_config(cls, obj, name: str):
