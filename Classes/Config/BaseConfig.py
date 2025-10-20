@@ -2,8 +2,8 @@ from __future__ import annotations
 
 import abc
 import inspect
-import typing
 import threading
+import typing
 
 
 class BaseConfig(abc.ABC):

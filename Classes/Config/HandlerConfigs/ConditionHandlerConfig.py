@@ -7,6 +7,7 @@ from Classes.Handler.ConditionHandler.Task import Task
 @dataclasses.dataclass
 class ConditionHandlerConfig(BaseConfig):
     tasks: list[Task] = None
+    interval: int = None
 
     @staticmethod
     def _custom_tasks(data: list[dict]) -> list[Task]:

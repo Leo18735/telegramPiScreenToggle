@@ -19,18 +19,18 @@ class Config(BaseConfig):
     controller: ControllerConfig = dataclasses.field(default_factory=ControllerConfig)
     handler: HandlerConfig = dataclasses.field(default_factory=HandlerConfig)
     _file: str = None
-    _reload_interval: int = None
+    reload_interval: int = None
 
     @classmethod
-    def load_config_file(cls, file: str, reload_interval: int) -> typing.Self:
-        return cls(_file=file, _reload_interval=reload_interval)._reload()
+    def load_config_file(cls, file: str) -> typing.Self:
+        return cls(_file=file)._reload()
 
     def __post_init__(self):
         threading.Thread(target=self._reload_thread, daemon=True).start()
 
     def _reload_thread(self):
         while True:
-            time.sleep(self._reload_interval)
+            time.sleep(self.reload_interval)
             self._reload()
 
     def _reload(self):

@@ -18,7 +18,7 @@ def delayed(handler_class: type[BaseHandler], *args):
 
 
 def main():
-    config: Config = Config.load_config_file("config.json", 600)
+    config: Config = Config.load_config_file("config.json")
 
     fan_controller: FanController = FanController(config)
     screen_controller: ScreenController = ScreenController(config)

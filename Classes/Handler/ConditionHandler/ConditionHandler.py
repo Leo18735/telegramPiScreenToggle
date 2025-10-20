@@ -1,4 +1,5 @@
 import time
+
 from Classes.Config.HandlerConfigs.ConditionHandlerConfig import ConditionHandlerConfig
 from Classes.Handler.BaseHandler import BaseHandler
 
@@ -11,4 +12,4 @@ class ConditionHandler(BaseHandler[ConditionHandlerConfig]):
         while True:
             for task in self._config.tasks:
                 task.execute(self._request)
-            time.sleep(60)
+            time.sleep(self._config.interval)
