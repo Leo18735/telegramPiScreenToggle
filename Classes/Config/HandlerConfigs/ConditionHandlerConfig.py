@@ -1,11 +1,11 @@
 import dataclasses
 
 from Classes.Config.BaseConfig import BaseConfig
-from Classes.Handler.TemperatureHandler.Task import Task
+from Classes.Handler.ConditionHandler.Task import Task
 
 
 @dataclasses.dataclass
-class TemperatureHandlerConfig(BaseConfig):
+class ConditionHandlerConfig(BaseConfig):
     tasks: list[Task] = None
 
     @staticmethod

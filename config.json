@@ -26,17 +26,61 @@
                 }
             ]
         },
-        "temperature_handler": {
+        "condition_handler": {
             "tasks": [
                 {
-                    "temperature": 45,
-                    "condition": "<",
-                    "endpoint": "fan/set/off"
+                    "endpoint": "fan/set/on",
+                    "conditions": [
+                        {
+                            "value1": {
+                                "value": "fan/get",
+                                "type": "endpoint"
+                            },
+                            "value2": {
+                                "value": "off",
+                                "type": "value"
+                            },
+                            "comparator": "="
+                        },
+                        {
+                            "value1": {
+                                "value": "temperature/get",
+                                "type": "endpoint"
+                            },
+                            "value2": {
+                                "value": 55.0,
+                                "type": "value"
+                            },
+                            "comparator": ">"
+                        }
+                    ]
                 },
                 {
-                    "temperature": 55,
-                    "condition": ">",
-                    "endpoint": "fan/set/on"
+                    "endpoint": "fan/set/off",
+                    "conditions": [
+                        {
+                            "value1": {
+                                "value": "fan/get",
+                                "type": "endpoint"
+                            },
+                            "value2": {
+                                "value": "on",
+                                "type": "value"
+                            },
+                            "comparator": "="
+                        },
+                        {
+                            "value1": {
+                                "value": "temperature/get",
+                                "type": "endpoint"
+                            },
+                            "value2": {
+                                "value": 45.0,
+                                "type": "value"
+                            },
+                            "comparator": "<"
+                        }
+                    ]
                 }
             ]
         },
