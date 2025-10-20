@@ -21,7 +21,7 @@
                     "endpoint": "brightness/set/25"
                 },
                 {
-                    "time": "9:00",
+                    "time": "8:00",
                     "endpoint": "brightness/set/255"
                 }
             ]

@@ -32,7 +32,6 @@ class Config(BaseConfig):
         while True:
             time.sleep(self._reload_interval)
             self._reload()
-            print(self.controller.fan_controller.pin)
 
     def _reload(self):
         with open(self._file, "r") as f:

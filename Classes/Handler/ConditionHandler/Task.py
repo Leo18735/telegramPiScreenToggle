@@ -12,15 +12,11 @@ class Value:
     def get(self, request_callback: typing.Callable[[str], requests.Response]):
         assert self.type in ["value", "endpoint"]
 
-        print(f"{self.value} {self.type}")
-
         match self.type:
             case "value":
                 return self.value
             case "endpoint":
-                response = request_callback(self.value).json()
-                print(response)
-                return response.get("data").get("state")
+                return request_callback(self.value).json().get("data").get("state")
 
 
 @dataclasses.dataclass
@@ -34,8 +30,6 @@ class Condition:
 
         value1: typing.Union[float, int, str] = self.value1.get(request_callback)
         value2: typing.Union[float, int, str] = self.value2.get(request_callback)
-
-        print(f"Values: {value1} {self.comparator} {value2}")
 
         match self.comparator:
             case ">":
