@@ -107,7 +107,7 @@ class FlaskHandler(FlaskWrapper, BaseConfigHolder[FlaskHandlerConfig]):
                 return self._error(-1, str(e))
 
         @self._app.route("/api/v1/slideshow/set/<value>")
-        def _slideshow_set(value: int):
+        def _slideshow_set(value: str):
             available_configs: list[str] = self._slideshow_controller.get_available_configs()
             if value not in available_configs:
                 return self._error(4, f"{value} does not exist. "
