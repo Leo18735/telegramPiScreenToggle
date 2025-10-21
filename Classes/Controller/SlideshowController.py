@@ -22,7 +22,7 @@ class SlideshowController(BaseExecutionController[SlideshowControllerConfig]):
 
     def __start_slideshow(self, config_name: str):
         self._execute(f"{self._config.python_path} {self._config.main_path} {' '.join(self._config.args)}"
-                      .replace("#CONFIG_NAME", config_name),
+                      .replace("#CONFIG_NAME#", config_name),
                       cwd=self._config.slideshow_path)
 
     def get_available_configs(self) -> list[str]:
