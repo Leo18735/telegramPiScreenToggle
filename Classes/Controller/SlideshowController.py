@@ -9,7 +9,11 @@ from Classes.Controller.BaseExecutionController import BaseExecutionController
 
 class SlideshowController(BaseExecutionController[SlideshowControllerConfig]):
     def get_state(self):
-        raise NotImplementedError
+        return [
+            os.path.splitext(os.path.basename(x))[0]
+            for x in
+            glob.glob(f"{os.path.join(self._config.slideshow_path, self._config.configs_path)}/*.json")
+        ]
 
     def __kill_slideshow(self):
         args: list[str] = ([self._config.python_path, self._config.main_path] +
@@ -25,13 +29,6 @@ class SlideshowController(BaseExecutionController[SlideshowControllerConfig]):
         self._execute(f"{self._config.python_path} {self._config.main_path} {' '.join(self._config.args)}"
                       .replace("#CONFIG_NAME#", config_name),
                       cwd=self._config.slideshow_path)
-
-    def get_available_configs(self) -> list[str]:
-        return [
-            os.path.splitext(os.path.basename(x))[0]
-            for x in
-            glob.glob(f"{os.path.join(self._config.slideshow_path, self._config.configs_path)}/*.json")
-        ]
 
     def set_state(self, state: str):
         self.__kill_slideshow()
