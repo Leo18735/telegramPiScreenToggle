@@ -5,6 +5,7 @@ from Classes.Config.HandlerConfigs.FlaskHandlerConfig import FlaskHandlerConfig
 from Classes.Controller.BrightnessController import BrightnessController
 from Classes.Controller.FanController import FanController
 from Classes.Controller.ScreenController import ScreenController
+from Classes.Controller.SlideshowController import SlideshowController
 from Classes.Controller.TemperatureController import TemperatureController
 
 
@@ -13,7 +14,8 @@ class FlaskHandler(FlaskWrapper, BaseConfigHolder[FlaskHandlerConfig]):
         0: "",
         1: "value not in ['on', 'off']",
         2: "value > 255 | < 0",
-        3: "value not in ['on', 'off', 'block', 'unblock']"
+        3: "value not in ['on', 'off', 'block', 'unblock']",
+        4: ""
     }
 
     def __init__(self,
@@ -21,6 +23,7 @@ class FlaskHandler(FlaskWrapper, BaseConfigHolder[FlaskHandlerConfig]):
                  screen_controller: ScreenController,
                  temperature_controller: TemperatureController,
                  brightness_controller: BrightnessController,
+                 slideshow_controller: SlideshowController,
                  *args, **kwargs):
         BaseConfigHolder.__init__(self, *args, **kwargs)
         FlaskWrapper.__init__(self, "telegramPiScreenToggle", self._config.ip, self._config.port)
@@ -29,6 +32,7 @@ class FlaskHandler(FlaskWrapper, BaseConfigHolder[FlaskHandlerConfig]):
         self._screen_controller: ScreenController = screen_controller
         self._temperature_controller: TemperatureController = temperature_controller
         self._brightness_controller: BrightnessController = brightness_controller
+        self._slideshow_controller: SlideshowController = slideshow_controller
 
     def run(self):
         if self._config.ip not in ["0.0.0.0", "127.0.0.1"]:
@@ -53,7 +57,11 @@ class FlaskHandler(FlaskWrapper, BaseConfigHolder[FlaskHandlerConfig]):
         @self._app.route("/api/v1/fan/get")
         def _fan_get():
             try:
-                return self._error(0, data={"state": "on" if self._fan_controller.get_state() else "off"})
+                state, blocked = self._fan_controller.get_state()
+                return self._error(0, data={
+                    "state": "on" if state else "off",
+                    "mode": "blocked" if blocked else "unblocked"
+                })
             except Exception as e:
                 return self._error(-1, str(e))
 
@@ -97,3 +105,15 @@ class FlaskHandler(FlaskWrapper, BaseConfigHolder[FlaskHandlerConfig]):
                 return self._error(0, data={"state": self._temperature_controller.get_state()})
             except Exception as e:
                 return self._error(-1, str(e))
+
+        @self._app.route("/api/v1/slideshow/set/<value>")
+        def _slideshow_set(value: int):
+            available_configs: list[str] = self._slideshow_controller.get_available_configs()
+            if value not in available_configs:
+                return self._error(4, f"{value} does not exist. "
+                                      f"Available: {' ,'.join(available_configs)}")
+            try:
+                self._slideshow_controller.set_state(value)
+            except Exception as e:
+                return self._error(-1, str(e))
+            return self._error(0)

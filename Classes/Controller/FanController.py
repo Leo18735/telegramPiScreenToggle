@@ -13,8 +13,8 @@ class FanController(BaseGpioController[FanControllerConfig]):
 
         self._lock: threading.Lock = threading.Lock()
 
-    def get_state(self) -> bool:
-        return self._state
+    def get_state(self) -> tuple[bool, bool]:
+        return self._state, self._blocked
 
     def set_state(self, state: str):
         self._lock.acquire()

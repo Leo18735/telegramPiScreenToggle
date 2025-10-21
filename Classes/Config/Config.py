@@ -64,4 +64,8 @@ class Config(BaseConfig):
         ).lower()
 
     def get_correct_config(self, name: str) -> C:
-        return self._find_config(self, self._camel_to_snake(name))
+        config_name: str = self._camel_to_snake(name)
+        config: typing.Optional[C] = self._find_config(self, config_name)
+        if config is None:
+            raise Exception(f"Could not find config for name '{name}'")
+        return config

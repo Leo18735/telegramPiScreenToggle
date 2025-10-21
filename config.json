@@ -12,6 +12,11 @@
         },
         "temperature_controller": {
             "command": "vcgencmd measure_temp"
+        },
+        "slideshow_controller": {
+            "slideshow_path": "/home/pi/repos/slideshow",
+            "python_path": "venv/bin/python",
+            "configs_path": "configs"
         }
     },
     "handler": {

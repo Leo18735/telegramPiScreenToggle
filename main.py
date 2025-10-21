@@ -5,6 +5,7 @@ from Classes.Config.Config import Config
 from Classes.Controller.BrightnessController import BrightnessController
 from Classes.Controller.FanController import FanController
 from Classes.Controller.ScreenController import ScreenController
+from Classes.Controller.SlideshowController import SlideshowController
 from Classes.Controller.TemperatureController import TemperatureController
 from Classes.Handler.BaseHandler import BaseHandler
 from Classes.Handler.ConditionHandler.ConditionHandler import ConditionHandler
@@ -24,14 +25,16 @@ def main():
     screen_controller: ScreenController = ScreenController(config)
     temperature_controller: TemperatureController = TemperatureController(config)
     brightness_controller: BrightnessController = BrightnessController(config)
+    slideshow_controller: SlideshowController = SlideshowController(config)
 
-    threading.Thread(target=delayed, args=(TimeHandler, config)).start()
-    threading.Thread(target=delayed, args=(ConditionHandler, config)).start()
+    threading.Thread(target=delayed, args=(TimeHandler, config), daemon=True).start()
+    threading.Thread(target=delayed, args=(ConditionHandler, config), daemon=True).start()
     FlaskHandler(
         fan_controller,
         screen_controller,
         temperature_controller,
         brightness_controller,
+        slideshow_controller,
         config
     ).run()
 
