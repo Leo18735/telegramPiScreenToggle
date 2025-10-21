@@ -12,7 +12,8 @@ class SlideshowController(BaseExecutionController[SlideshowControllerConfig]):
         raise NotImplementedError
 
     def __kill_slideshow(self):
-        args: list[str] = [self._config.python_path, self._config.main_path] + self._config.args
+        args: list[str] = ([self._config.python_path, self._config.main_path] +
+                           [x for x in self._config.args if not (x.startswith("#")  and x.endswith("#"))])
         for process in psutil.process_iter():
             try:
                 if process.cwd() == self._config.slideshow_path and all(x in process.cmdline() for x in args):
