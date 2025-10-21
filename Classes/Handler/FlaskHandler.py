@@ -117,3 +117,10 @@ class FlaskHandler(FlaskWrapper, BaseConfigHolder[FlaskHandlerConfig]):
             except Exception as e:
                 return self._error(-1, str(e))
             return self._error(0)
+
+        @self._app.route("/api/v1/slideshow/get")
+        def _slideshow_get():
+            try:
+                return self._error(0, data={"state": self._slideshow_controller.get_available_configs()})
+            except Exception as e:
+                return self._error(-1, str(e))
