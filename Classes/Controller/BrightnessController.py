@@ -11,4 +11,4 @@ class BrightnessController(BaseController[BrightnessControllerConfig]):
 
     def get_state(self):
         with open(self._config.file, "r") as f:
-            return re.findall(r"\d+", f.read())[0]
+            return int(re.findall(r"\d+", f.read())[0])
