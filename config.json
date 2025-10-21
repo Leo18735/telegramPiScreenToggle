@@ -16,7 +16,9 @@
         "slideshow_controller": {
             "slideshow_path": "/home/pi/repos/slideshow",
             "python_path": "venv/bin/python",
-            "configs_path": "configs"
+            "configs_path": "configs",
+            "main_path": "main.py",
+            "args": ["-f", "#CONFIG_NAME#", "-d", "3"]
         }
     },
     "handler": {

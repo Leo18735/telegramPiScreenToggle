@@ -12,7 +12,7 @@ class SlideshowController(BaseExecutionController[SlideshowControllerConfig]):
         raise NotImplementedError
 
     def __kill_slideshow(self):
-        args: list[str] = [self._config.python_path, "main.py", "-f", "-d"]
+        args: list[str] = [self._config.python_path, self._config.main_path] + self._config.args
         for process in psutil.process_iter():
             try:
                 if process.cwd() == self._config.slideshow_path and all(x in process.cmdline() for x in args):
@@ -21,7 +21,9 @@ class SlideshowController(BaseExecutionController[SlideshowControllerConfig]):
                 continue
 
     def __start_slideshow(self, config_name: str):
-        self._execute(f"{self._config.python_path} -f {config_name} -d 3", cwd=self._config.slideshow_path)
+        self._execute(f"{self._config.python_path} {self._config.main_path} {' '.join(self._config.args)}"
+                      .replace("#CONFIG_NAME", config_name),
+                      cwd=self._config.slideshow_path)
 
     def get_available_configs(self) -> list[str]:
         return [
