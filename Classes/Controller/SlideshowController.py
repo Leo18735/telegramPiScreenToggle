@@ -25,15 +25,16 @@ class SlideshowController(BaseExecutionController[SlideshowControllerConfig]):
             except (psutil.NoSuchProcess, psutil.AccessDenied):
                 continue
 
-    def __start_slideshow(self, config_name: str):
+    def __start_slideshow(self, config_name: str, duration: int):
         self._execute(f"{self._config.python_path} {self._config.main_path} {' '.join(self._config.args)}"
-                      .replace("#CONFIG_NAME#", config_name),
+                      .replace("#CONFIG_NAME#", config_name)
+                      .replace("#DURATION#", str(duration)),
                       cwd=self._config.slideshow_path)
 
-    def set_state(self, state: str):
+    def set_state(self, state: str, duration: int):
         self.kill_slideshow()
         threading.Thread(
             target=self.__start_slideshow,
-            args=(state, ),
+            args=(state, duration),
             daemon=True
         ).start()
