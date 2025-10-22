@@ -1,9 +1,9 @@
 import dataclasses
 
 from Classes.Config.BaseConfig import BaseConfig
-from Classes.Config.HandlerConfigs.ConditionHandlerConfig import ConditionHandlerConfig
+from Classes.Config.HandlerConfigs.ConditionHandler.ConditionHandlerConfig import ConditionHandlerConfig
 from Classes.Config.HandlerConfigs.FlaskHandlerConfig import FlaskHandlerConfig
-from Classes.Config.HandlerConfigs.TimeHandlerConfig import TimeHandlerConfig
+from Classes.Config.HandlerConfigs.TimeHandler.TimeHandlerConfig import TimeHandlerConfig
 
 
 @dataclasses.dataclass

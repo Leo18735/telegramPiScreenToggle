@@ -18,7 +18,12 @@
             "python_path": "venv/bin/python",
             "configs_path": "configs",
             "main_path": "main.py",
-            "args": ["-f", "#CONFIG_NAME#", "-d", "#DURATION#"]
+            "args": [
+                "-f",
+                "#CONFIG_NAME#",
+                "-d",
+                "#DURATION#"
+            ]
         }
     },
     "handler": {

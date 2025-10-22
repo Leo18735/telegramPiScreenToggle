@@ -8,9 +8,9 @@ from Classes.Controller.ScreenController import ScreenController
 from Classes.Controller.SlideshowController import SlideshowController
 from Classes.Controller.TemperatureController import TemperatureController
 from Classes.Handler.BaseHandler import BaseHandler
-from Classes.Handler.ConditionHandler.ConditionHandler import ConditionHandler
+from Classes.Handler.ConditionHandler import ConditionHandler
 from Classes.Handler.FlaskHandler import FlaskHandler
-from Classes.Handler.TimeHandler.TimeHandler import TimeHandler
+from Classes.Handler.TimeHandler import TimeHandler
 
 
 def delayed(handler_class: type[BaseHandler], *args):

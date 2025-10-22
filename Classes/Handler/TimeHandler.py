@@ -1,7 +1,7 @@
 import time
 from datetime import datetime
 
-from Classes.Config.HandlerConfigs.TimeHandlerConfig import TimeHandlerConfig
+from Classes.Config.HandlerConfigs.TimeHandler.TimeHandlerConfig import TimeHandlerConfig
 from Classes.Handler.BaseHandler import BaseHandler
 
 

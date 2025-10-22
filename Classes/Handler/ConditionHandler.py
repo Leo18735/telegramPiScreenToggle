@@ -1,6 +1,6 @@
 import time
 
-from Classes.Config.HandlerConfigs.ConditionHandlerConfig import ConditionHandlerConfig
+from Classes.Config.HandlerConfigs.ConditionHandler.ConditionHandlerConfig import ConditionHandlerConfig
 from Classes.Handler.BaseHandler import BaseHandler
 
 

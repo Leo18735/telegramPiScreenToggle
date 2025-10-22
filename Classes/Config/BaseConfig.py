@@ -28,6 +28,7 @@ class BaseConfig(abc.ABC):
                 obj.load_config(value)
                 continue
             setattr(self, key, self._custom_loader(self, key, value))
+        return self
 
     def __getattribute__(self, name):
         if name in ("_lock", "__dict__", "__class__"):  # avoid recursion
