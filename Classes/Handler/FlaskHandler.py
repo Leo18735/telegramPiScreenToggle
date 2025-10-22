@@ -11,11 +11,7 @@ from Classes.Controller.TemperatureController import TemperatureController
 
 class FlaskHandler(FlaskWrapper, BaseConfigHolder[FlaskHandlerConfig]):
     _errors = {
-        0: "",
-        1: "value not in ['on', 'off']",
-        2: "value > 255 | < 0",
-        3: "value not in ['on', 'off', 'block', 'unblock']",
-        4: ""
+        0: ""
     }
 
     def __init__(self,
@@ -46,13 +42,12 @@ class FlaskHandler(FlaskWrapper, BaseConfigHolder[FlaskHandlerConfig]):
 
         @self._app.route("/api/v1/fan/set/<value>")
         def _fan_set(value: str):
-            if value not in ["on", "off", "block", "unblock"]:
-                return self._error(3)
             try:
+                assert value in ["on", "off", "block", "unblock"]
                 self._fan_controller.set_state(value)
+                return self._error(0)
             except Exception as e:
                 return self._error(-1, str(e))
-            return self._error(0)
 
         @self._app.route("/api/v1/fan/get")
         def _fan_get():
@@ -67,13 +62,12 @@ class FlaskHandler(FlaskWrapper, BaseConfigHolder[FlaskHandlerConfig]):
 
         @self._app.route("/api/v1/screen/set/<value>")
         def _screen_set(value: str):
-            if value not in ["on", "off"]:
-                return self._error(1)
             try:
+                assert value in ["on", "off"]
                 self._screen_controller.set_state(value == "on")
+                return self._error(0)
             except Exception as e:
                 return self._error(-1, str(e))
-            return self._error(0)
 
         @self._app.route("/api/v1/screen/get")
         def _screen_get():
@@ -84,13 +78,12 @@ class FlaskHandler(FlaskWrapper, BaseConfigHolder[FlaskHandlerConfig]):
 
         @self._app.route("/api/v1/brightness/set/<int:value>")
         def _brightness_set(value: int):
-            if value > 255 or value < 0:
-                return self._error(2)
             try:
+                assert 0 <= value <= 255
                 self._brightness_controller.set_state(value)
+                return self._error(0)
             except Exception as e:
                 return self._error(-1, str(e))
-            return self._error(0)
 
         @self._app.route("/api/v1/brightness/get")
         def _brightness_get():
@@ -108,15 +101,15 @@ class FlaskHandler(FlaskWrapper, BaseConfigHolder[FlaskHandlerConfig]):
 
         @self._app.route("/api/v1/slideshow/set/<value>")
         def _slideshow_set(value: str):
-            available_configs: list[str] = self._slideshow_controller.get_state()
-            if value not in available_configs:
-                return self._error(4, f"{value} does not exist. "
-                                      f"Available: {' ,'.join(available_configs)}")
             try:
+                if value == "stop":
+                    self._slideshow_controller.kill_slideshow()
+                    return self._error(0)
+                assert value in self._slideshow_controller.get_state()
                 self._slideshow_controller.set_state(value)
+                return self._error(0)
             except Exception as e:
                 return self._error(-1, str(e))
-            return self._error(0)
 
         @self._app.route("/api/v1/slideshow/get")
         def _slideshow_get():

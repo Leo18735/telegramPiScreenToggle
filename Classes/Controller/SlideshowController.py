@@ -15,7 +15,7 @@ class SlideshowController(BaseExecutionController[SlideshowControllerConfig]):
             glob.glob(f"{os.path.join(self._config.slideshow_path, self._config.configs_path)}/*.json")
         ]
 
-    def __kill_slideshow(self):
+    def kill_slideshow(self):
         args: list[str] = ([self._config.python_path, self._config.main_path] +
                            [x for x in self._config.args if not (x.startswith("#")  and x.endswith("#"))])
         for process in psutil.process_iter():
@@ -31,7 +31,7 @@ class SlideshowController(BaseExecutionController[SlideshowControllerConfig]):
                       cwd=self._config.slideshow_path)
 
     def set_state(self, state: str):
-        self.__kill_slideshow()
+        self.kill_slideshow()
         threading.Thread(
             target=self.__start_slideshow,
             args=(state, ),
