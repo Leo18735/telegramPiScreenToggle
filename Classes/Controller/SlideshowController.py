@@ -26,10 +26,10 @@ class SlideshowController(BaseExecutionController[SlideshowControllerConfig]):
                 continue
 
     def __start_slideshow(self, config_name: str, duration: int):
-        print(self._execute(f"{self._config.python_path} {self._config.main_path} {' '.join(self._config.args)}"
-                            .replace("#CONFIG_NAME#", config_name)
-                            .replace("#DURATION#", str(duration)),
-                            cwd=self._config.slideshow_path))
+        self._execute(f"{self._config.python_path} {self._config.main_path} {' '.join(self._config.args)}"
+                      .replace("#CONFIG_NAME#", config_name)
+                      .replace("#DURATION#", str(duration)),
+                      cwd=self._config.slideshow_path)
 
     def set_state(self, state: str, duration: int):
         self.kill_slideshow()
