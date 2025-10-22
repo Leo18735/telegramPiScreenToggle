@@ -9,7 +9,7 @@ from Classes.Config.HandlerConfigs.ConditionHandler.Condition import Condition
 
 @dataclasses.dataclass
 class Task(BaseConfig):
-    # endpoint: str = None
+    endpoint: str = None
     conditions: list[Condition] = None
 
     @staticmethod
