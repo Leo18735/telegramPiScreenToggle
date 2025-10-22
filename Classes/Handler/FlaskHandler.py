@@ -43,7 +43,8 @@ class FlaskHandler(FlaskWrapper, BaseConfigHolder[FlaskHandlerConfig]):
         @self._app.route("/api/v1/fan/set/<value>")
         def _fan_set(value: str):
             try:
-                assert value in ["on", "off", "block", "unblock"]
+                possible_values: list[str] = ["on", "off", "block", "unblock"]
+                assert value in possible_values, f"{value} not in {possible_values}"
                 self._fan_controller.set_state(value)
                 return self._error(0)
             except Exception as e:
@@ -63,7 +64,8 @@ class FlaskHandler(FlaskWrapper, BaseConfigHolder[FlaskHandlerConfig]):
         @self._app.route("/api/v1/screen/set/<value>")
         def _screen_set(value: str):
             try:
-                assert value in ["on", "off"]
+                possible_values: list[str] = ["on", "off"]
+                assert value in possible_values, f"{value} not in {possible_values}"
                 self._screen_controller.set_state(value == "on")
                 return self._error(0)
             except Exception as e:
@@ -79,7 +81,7 @@ class FlaskHandler(FlaskWrapper, BaseConfigHolder[FlaskHandlerConfig]):
         @self._app.route("/api/v1/brightness/set/<int:value>")
         def _brightness_set(value: int):
             try:
-                assert 0 <= value <= 255
+                assert 0 <= value <= 255, f"0 > {value} > 255"
                 self._brightness_controller.set_state(value)
                 return self._error(0)
             except Exception as e:
@@ -105,7 +107,8 @@ class FlaskHandler(FlaskWrapper, BaseConfigHolder[FlaskHandlerConfig]):
                 if value == "off":
                     self._slideshow_controller.kill_slideshow()
                     return self._error(0)
-                assert value in self._slideshow_controller.get_state()
+                possible_configs: list[str] = self._slideshow_controller.get_state()
+                assert value in possible_configs, f"{value} not in {possible_configs}"
                 self._slideshow_controller.set_state(value)
                 return self._error(0)
             except Exception as e:
