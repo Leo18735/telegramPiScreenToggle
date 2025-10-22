@@ -102,7 +102,7 @@ class FlaskHandler(FlaskWrapper, BaseConfigHolder[FlaskHandlerConfig]):
         @self._app.route("/api/v1/slideshow/set/<value>")
         def _slideshow_set(value: str):
             try:
-                if value == "stop":
+                if value == "off":
                     self._slideshow_controller.kill_slideshow()
                     return self._error(0)
                 assert value in self._slideshow_controller.get_state()
