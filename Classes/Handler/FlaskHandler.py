@@ -101,8 +101,7 @@ class FlaskHandler(FlaskWrapper, BaseConfigHolder[FlaskHandlerConfig]):
             except Exception as e:
                 return self._error(-1, str(e))
 
-        @self._app.route("/api/v1/slideshow/set/<value>")
-        def _slideshow_set(value: str, duration: int = 3):
+        def _handle_slideshow(value: str, duration: int):
             try:
                 if value == "off":
                     self._slideshow_controller.kill_slideshow()
@@ -114,9 +113,13 @@ class FlaskHandler(FlaskWrapper, BaseConfigHolder[FlaskHandlerConfig]):
             except Exception as e:
                 return self._error(-1, str(e))
 
+        @self._app.route("/api/v1/slideshow/set/<value>")
+        def _slideshow_set(value: str):
+            return _handle_slideshow(value, 3)
+
         @self._app.route("/api/v1/slideshow/set/<value>/<int:duration>")
         def _slideshow_set_duration(value: str, duration: int):
-            return _slideshow_set(value, duration)
+            return _handle_slideshow(value, duration)
 
         @self._app.route("/api/v1/slideshow/get")
         def _slideshow_get():
