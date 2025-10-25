@@ -42,14 +42,17 @@ class SlideshowController(BaseExecutionController[SlideshowControllerConfig]):
             stdout=subprocess.PIPE,
             stderr=subprocess.STDOUT,
             text=True,
-            cwd=cwd
+            cwd=cwd,
+            env={**os.environ, "PYTHONUNBUFFERED": "1"}
         )
 
         all_lines: list[str] = []
-        for line in process.stdout.readlines():
-            if "started" in line.lower():
+        while True:
+            all_lines.append(process.stdout.readline())
+            if not all_lines[-1]:
+                break
+            if "started" in all_lines[-1].lower():
                 return ""
-            all_lines.append(line)
         return "".join(all_lines)
 
 
