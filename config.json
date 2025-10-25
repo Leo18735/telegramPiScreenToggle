@@ -22,7 +22,11 @@
                 "-f",
                 "#CONFIG_NAME#",
                 "-d",
-                "#DURATION#"
+                "#DURATION#",
+                "-p",
+                "2",
+                "-q",
+                "4"
             ]
         }
     },
