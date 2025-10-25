@@ -1,9 +1,9 @@
 import glob
 import os
 import threading
-
+import queue
 import psutil
-
+import subprocess
 from Classes.Config.ControllerConfigs.SlideshowControllerConfig import SlideshowControllerConfig
 from Classes.Controller.BaseExecutionController import BaseExecutionController
 
@@ -26,16 +26,42 @@ class SlideshowController(BaseExecutionController[SlideshowControllerConfig]):
             except (psutil.NoSuchProcess, psutil.AccessDenied):
                 continue
 
-    def __start_slideshow(self, config_name: str, duration: int):
-        self._execute(f"{self._config.python_path} {self._config.main_path} {' '.join(self._config.args)}"
-                      .replace("#CONFIG_NAME#", config_name)
-                      .replace("#DURATION#", str(duration)),
-                      cwd=self._config.slideshow_path)
+    def __start_slideshow(self, config_name: str, duration: int, communication_queue: queue.Queue[str]):
+        communication_queue.put(self._execute_handle_result(
+            f"{self._config.python_path} {self._config.main_path} {' '.join(self._config.args)}"
+            .replace("#CONFIG_NAME#", config_name)
+            .replace("#DURATION#", str(duration)),
+            self._config.slideshow_path
+        ))
+
+    @staticmethod
+    def _execute_handle_result(cmd: str, cwd: str) -> str:
+        process = subprocess.Popen(
+            cmd,
+            shell=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            text=True,
+            cwd=cwd
+        )
+
+        all_lines: list[str] = []
+        for line in process.stdout.readlines():
+            if "started" in line.lower():
+                return ""
+            all_lines.append(line)
+        return "".join(all_lines)
+
 
     def set_state(self, state: str, duration: int):
         self.kill_slideshow()
+        communication_queue: queue.Queue[str] = queue.Queue()
         threading.Thread(
             target=self.__start_slideshow,
-            args=(state, duration),
+            args=(state, duration, communication_queue),
             daemon=True
         ).start()
+        result = communication_queue.get()
+        if not result:
+            return
+        raise Exception(result)
